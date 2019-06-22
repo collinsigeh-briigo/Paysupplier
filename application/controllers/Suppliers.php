@@ -13,18 +13,26 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Suppliers extends CI_Controller {
 
+<<<<<<< HEAD
     public function __construct()
     {
         parent::__construct();
         $this->load->library('custom_library');
     }
+=======
+   
+>>>>>>> 7ed47e682b023676bde457de39b526f3db587d1a
 
     /**
     * Display suppliers
     */
     public function index()
     {
+<<<<<<< HEAD
         $this->custom_library->check_login();
+=======
+        $this->check_login();
+>>>>>>> 7ed47e682b023676bde457de39b526f3db587d1a
 
         $data = array(
             'suppliers' => $this->get_suppliers()
@@ -39,7 +47,11 @@ class Suppliers extends CI_Controller {
     */
     public function create()
     {
+<<<<<<< HEAD
         $this->custom_library->check_login();
+=======
+        $this->check_login();
+>>>>>>> 7ed47e682b023676bde457de39b526f3db587d1a
 
         $data = array(
             'banks' => $this->get_banks()
@@ -54,7 +66,11 @@ class Suppliers extends CI_Controller {
     */
     public function save()
     {
+<<<<<<< HEAD
         $this->custom_library->check_login();
+=======
+        $this->check_login();
+>>>>>>> 7ed47e682b023676bde457de39b526f3db587d1a
 
         if(!$_POST){
             redirect(base_url().'dashboard/');
@@ -115,7 +131,11 @@ class Suppliers extends CI_Controller {
     */
     public function get_banks()
     {
+<<<<<<< HEAD
         $this->custom_library->check_login();
+=======
+        $this->check_login();
+>>>>>>> 7ed47e682b023676bde457de39b526f3db587d1a
 
         $ch = curl_init();
 
@@ -144,7 +164,11 @@ class Suppliers extends CI_Controller {
     */
     public function get_suppliers()
     {
+<<<<<<< HEAD
         $this->custom_library->check_login();
+=======
+        $this->check_login();
+>>>>>>> 7ed47e682b023676bde457de39b526f3db587d1a
 
         $ch = curl_init();
 
@@ -168,5 +192,17 @@ class Suppliers extends CI_Controller {
         return $arr['data'];
     }
 
+<<<<<<< HEAD
 
 }
+=======
+public function check_login()
+    {
+            
+            if(!isset($_SESSION['user_logged_in']) OR $_SESSION['user_logged_in'] != 'Yes'){
+                redirect(base_url().'dashboard/login/');
+            }
+    }
+
+}
+>>>>>>> 7ed47e682b023676bde457de39b526f3db587d1a
