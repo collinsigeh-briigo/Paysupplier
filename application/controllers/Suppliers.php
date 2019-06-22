@@ -13,18 +13,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Suppliers extends CI_Controller {
 
-    public function __construct()
-    {
-        parent::__construct();
-        $this->load->library('custom_library');
-    }
+   
 
     /**
     * Display suppliers
     */
     public function index()
     {
-        $this->custom_library->check_login();
+        $this->check_login();
 
         $data = array(
             'suppliers' => $this->get_suppliers()
@@ -39,7 +35,7 @@ class Suppliers extends CI_Controller {
     */
     public function create()
     {
-        $this->custom_library->check_login();
+        $this->check_login();
 
         $data = array(
             'banks' => $this->get_banks()
@@ -54,7 +50,7 @@ class Suppliers extends CI_Controller {
     */
     public function save()
     {
-        $this->custom_library->check_login();
+        $this->check_login();
 
         if(!$_POST){
             redirect(base_url().'dashboard/');
@@ -115,7 +111,7 @@ class Suppliers extends CI_Controller {
     */
     public function get_banks()
     {
-        $this->custom_library->check_login();
+        $this->check_login();
 
         $ch = curl_init();
 
@@ -144,7 +140,7 @@ class Suppliers extends CI_Controller {
     */
     public function get_suppliers()
     {
-        $this->custom_library->check_login();
+        $this->check_login();
 
         $ch = curl_init();
 
@@ -168,5 +164,12 @@ class Suppliers extends CI_Controller {
         return $arr['data'];
     }
 
+public function check_login()
+    {
+            
+            if(!isset($_SESSION['user_logged_in']) OR $_SESSION['user_logged_in'] != 'Yes'){
+                redirect(base_url().'dashboard/login/');
+            }
+    }
 
 }
