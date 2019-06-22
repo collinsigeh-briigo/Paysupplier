@@ -211,8 +211,12 @@ class Payments extends CI_Controller {
     {
         $this->custom_library->check_login();
 
+        $data = array(
+            'suppliers' => $this->get_suppliers()
+        );
+
         $this->load->view('templates/header');
-        $this->load->view('pages/bulk_transfer');
+        $this->load->view('pages/bulk_transfer', $data);
     }
 
     /**
@@ -221,14 +225,133 @@ class Payments extends CI_Controller {
     public function confirm_bulk_transfer()
     {
         $this->custom_library->check_login();
+
+        if(!$_POST){
+            redirect(base_url().'dashboard/');
+        }
+
+        $transfers = [];
+        $total_amount = 0;
+        $transfer_sum = 0;
+
+        $suppliers = $this->get_suppliers();
+        foreach($suppliers as $supplier){
+            $amount = 0;
+            $ref = $supplier['recipient_code'];
+            if(isset($_POST[$ref]) && ($_POST[$ref] > 100000)){
+                $amount = $_POST[$ref];
+                $transfers[$ref] = array(
+                    'amount' => $amount,
+                    'recipient_code' => $ref,
+                    'supplier_name' => $supplier['name']
+                );
+            }
+            $total_amount = $total_amount + $amount;
+        }
+
+        $total_transfers = count($transfers);
+
+        if($total_transfers < 1){
+            $_SESSION['errors'] = 'Please enter an amount for at least ONE supplier.';
+            redirect(base_url().'payments/bulk_transfer/');
+        }
+
+        $transfer_cost = $total_transfers * 5000;
+        $transfer_sum = $total_amount + $transfer_cost;
+
+        $account_balance = $this->account_balance();
+
+        if($transfer_sum > ($account_balance + 50000)){
+            $_SESSION['errors'] = '<p>Your request is denied because your transfer sum plus charges is too large for your account balance.</p><p>For your transfer to be successful, you must have at least NGN 500.00 more than the amount you wish to transfer plus charges.</p>';
+            redirect(base_url().'payments/bulk_transfer/');
+        }
         
         $data = array(
-            'amount' => '40000',
-            'reason' => 'Bread Flower'
+            'transfers' => $transfers,
+            'total_transfers' => $total_transfers,
+            'total_sum' => $transfer_sum
         );
 
         $this->load->view('templates/header');
         $this->load->view('pages/confirm_bulk_transfer', $data);
+    }
+
+    /**
+    * Receives and handles bulk disbursement request to Paystack API
+    */
+    public function send_bulk_transfer()
+    {
+        //checker
+        $_SESSION['errors'] = '<p>Bulk transfers CANNOT be processed for now!</p><p><b>Troubleshooting in progress.</b></p><p>Please use the "<b><a href="'.base_url().'payments/make_payment">Pay a Supplier</a></b>"</p>';
+        redirect(base_url().'dashboard/failure/');
+        //checker
+
+        if(!$_POST){
+            redirect(base_url().'dashboard/');
+        }
+
+        $this->load->library('form_validation');
+
+        $this->form_validation->set_rules('confirmaton', 'Confirmation', 'required');
+
+        if ($this->form_validation->run() == FALSE)
+        {
+                $_SESSION['errors'] = validation_errors();
+                redirect(base_url().'payments/bulk_transfer/');
+        }
+
+        $transfers = [];
+
+        $suppliers = $this->get_suppliers();
+        foreach($suppliers as $supplier){
+            $amount = 0;
+            $ref = $supplier['recipient_code'];
+            if(isset($_POST[$ref]) && ($_POST[$ref] > 100000)){
+                $amount = $_POST[$ref];
+                $transfers->offset(array(
+                    'amount' => $amount,
+                    'recipient' => $ref
+                ));
+            }
+        }
+
+        var_dump($transfers);
+
+        $post_data = array(
+            'currency' => 'NGN',
+            'source' => 'balance',
+            'transfers' => $transfers
+        );
+
+        echo($post_data);
+        exit();
+
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, 'https://api.paystack.co/transfer');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, Array("Authorization: Bearer sk_test_964385f725f9e13b9a6579dd8b4dddf460aaf036"));
+ 
+        $output = curl_exec($ch);
+
+        curl_close($ch);
+
+        if($output === FALSE){
+            $_SESSION['errors'] = 'An unexpected error occured.';
+            redirect(base_url().'dashboard/');
+        }
+
+        $arr = json_decode($output, TRUE);
+        if($arr['status'] == 'true'){
+            $_SESSION['success'] = $arr['message'];
+            redirect(base_url().'dashboard/success/');
+        }else{
+            $_SESSION['errors'] = $arr['message'];
+            redirect(base_url().'dashboard/failure/');
+        }
     }
 
     /**
