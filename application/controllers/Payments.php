@@ -13,18 +13,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Payments extends CI_Controller {
 
-    public function __construct()
-    {
-        parent::__construct();
-        $this->load->library('custom_library');
-    }
+   
 
     /**
     * Display payouts
     */
     public function index()
     {
-        $this->custom_library->check_login();
+        $this->check_login();
 
         $data = array(
             'payouts' => $this->get_payouts()
@@ -39,7 +35,7 @@ class Payments extends CI_Controller {
     */
     public function make_payment()
     {
-        $this->custom_library->check_login();
+        $this->check_login();
 
         $data = array(
             'suppliers' => $this->get_suppliers()
@@ -54,7 +50,7 @@ class Payments extends CI_Controller {
     */
     public function confirm_payment()
     {
-        $this->custom_library->check_login();
+        $this->check_login();
 
         if(!$_POST){
             redirect(base_url().'dashboard/');
@@ -113,7 +109,7 @@ class Payments extends CI_Controller {
     */
     public function send_payment()
     {
-        $this->custom_library->check_login();
+        $this->check_login();
 
         if(!$_POST){
             redirect(base_url().'dashboard/');
@@ -180,7 +176,7 @@ class Payments extends CI_Controller {
     */
     public function get_payouts()
     {
-        $this->custom_library->check_login();
+        $this->check_login();
 
         $ch = curl_init();
 
@@ -209,7 +205,7 @@ class Payments extends CI_Controller {
     */
     public function bulk_transfer()
     {
-        $this->custom_library->check_login();
+        $this->check_login();
 
         $data = array(
             'suppliers' => $this->get_suppliers()
@@ -224,7 +220,7 @@ class Payments extends CI_Controller {
     */
     public function confirm_bulk_transfer()
     {
-        $this->custom_library->check_login();
+        $this->check_login();
 
         if(!$_POST){
             redirect(base_url().'dashboard/');
@@ -359,7 +355,7 @@ class Payments extends CI_Controller {
          */
         public function get_banks()
         {
-                $this->custom_library->check_login();
+                $this->check_login();
 
                 $ch = curl_init();
 
@@ -388,7 +384,7 @@ class Payments extends CI_Controller {
         */
         public function get_suppliers()
         {
-            $this->custom_library->check_login();
+            $this->check_login();
 
             $ch = curl_init();
 
@@ -417,7 +413,7 @@ class Payments extends CI_Controller {
          */
         public function account_balance()
         {
-                $this->custom_library->check_login();
+                $this->check_login();
 
                 $balance = 0;
 
@@ -479,6 +475,14 @@ class Payments extends CI_Controller {
                 // Return total count and values found in array
                 return array('total' => $count, 'values' => $values);
         }
+
+public function check_login()
+    {
+            
+            if(!isset($_SESSION['user_logged_in']) OR $_SESSION['user_logged_in'] != 'Yes'){
+                redirect(base_url().'dashboard/login/');
+            }
+    }
 
     
 }
