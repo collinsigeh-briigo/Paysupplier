@@ -13,26 +13,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Payments extends CI_Controller {
 
-<<<<<<< HEAD
     public function __construct()
     {
         parent::__construct();
         $this->load->library('custom_library');
     }
-=======
-   
->>>>>>> 7ed47e682b023676bde457de39b526f3db587d1a
 
     /**
     * Display payouts
     */
     public function index()
     {
-<<<<<<< HEAD
         $this->custom_library->check_login();
-=======
-        $this->check_login();
->>>>>>> 7ed47e682b023676bde457de39b526f3db587d1a
 
         $data = array(
             'payouts' => $this->get_payouts()
@@ -47,11 +39,7 @@ class Payments extends CI_Controller {
     */
     public function make_payment()
     {
-<<<<<<< HEAD
         $this->custom_library->check_login();
-=======
-        $this->check_login();
->>>>>>> 7ed47e682b023676bde457de39b526f3db587d1a
 
         $data = array(
             'suppliers' => $this->get_suppliers()
@@ -66,11 +54,7 @@ class Payments extends CI_Controller {
     */
     public function confirm_payment()
     {
-<<<<<<< HEAD
         $this->custom_library->check_login();
-=======
-        $this->check_login();
->>>>>>> 7ed47e682b023676bde457de39b526f3db587d1a
 
         if(!$_POST){
             redirect(base_url().'dashboard/');
@@ -129,11 +113,7 @@ class Payments extends CI_Controller {
     */
     public function send_payment()
     {
-<<<<<<< HEAD
         $this->custom_library->check_login();
-=======
-        $this->check_login();
->>>>>>> 7ed47e682b023676bde457de39b526f3db587d1a
 
         if(!$_POST){
             redirect(base_url().'dashboard/');
@@ -200,11 +180,7 @@ class Payments extends CI_Controller {
     */
     public function get_payouts()
     {
-<<<<<<< HEAD
         $this->custom_library->check_login();
-=======
-        $this->check_login();
->>>>>>> 7ed47e682b023676bde457de39b526f3db587d1a
 
         $ch = curl_init();
 
@@ -233,11 +209,7 @@ class Payments extends CI_Controller {
     */
     public function bulk_transfer()
     {
-<<<<<<< HEAD
         $this->custom_library->check_login();
-=======
-        $this->check_login();
->>>>>>> 7ed47e682b023676bde457de39b526f3db587d1a
 
         $data = array(
             'suppliers' => $this->get_suppliers()
@@ -252,11 +224,7 @@ class Payments extends CI_Controller {
     */
     public function confirm_bulk_transfer()
     {
-<<<<<<< HEAD
         $this->custom_library->check_login();
-=======
-        $this->check_login();
->>>>>>> 7ed47e682b023676bde457de39b526f3db587d1a
 
         if(!$_POST){
             redirect(base_url().'dashboard/');
@@ -391,11 +359,7 @@ class Payments extends CI_Controller {
          */
         public function get_banks()
         {
-<<<<<<< HEAD
                 $this->custom_library->check_login();
-=======
-                $this->check_login();
->>>>>>> 7ed47e682b023676bde457de39b526f3db587d1a
 
                 $ch = curl_init();
 
@@ -424,11 +388,7 @@ class Payments extends CI_Controller {
         */
         public function get_suppliers()
         {
-<<<<<<< HEAD
             $this->custom_library->check_login();
-=======
-            $this->check_login();
->>>>>>> 7ed47e682b023676bde457de39b526f3db587d1a
 
             $ch = curl_init();
 
@@ -457,11 +417,7 @@ class Payments extends CI_Controller {
          */
         public function account_balance()
         {
-<<<<<<< HEAD
                 $this->custom_library->check_login();
-=======
-                $this->check_login();
->>>>>>> 7ed47e682b023676bde457de39b526f3db587d1a
 
                 $balance = 0;
 
@@ -524,18 +480,5 @@ class Payments extends CI_Controller {
                 return array('total' => $count, 'values' => $values);
         }
 
-<<<<<<< HEAD
     
 }
-=======
-public function check_login()
-    {
-            
-            if(!isset($_SESSION['user_logged_in']) OR $_SESSION['user_logged_in'] != 'Yes'){
-                redirect(base_url().'dashboard/login/');
-            }
-    }
-
-    
-}
->>>>>>> 7ed47e682b023676bde457de39b526f3db587d1a
