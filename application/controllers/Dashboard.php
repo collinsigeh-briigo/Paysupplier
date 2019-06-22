@@ -13,18 +13,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Dashboard extends CI_Controller {
         
-        public function __construct()
-        {
-                parent::__construct();
-                $this->load->library('custom_library');
-        }
+      
 
         /**
          * Display dashboard
          */
         public function index()
         {
-                $this->custom_library->check_login();
+                $this->check_login();
 
                 $balance_in_kobo = $this->account_balance();
 
@@ -114,7 +110,7 @@ class Dashboard extends CI_Controller {
          */
         public function account_balance()
         {
-                $this->custom_library->check_login();
+                $this->check_login();
 
                 $balance = 0;
 
@@ -175,5 +171,13 @@ class Dashboard extends CI_Controller {
                 // Return total count and values found in array
                 return array('total' => $count, 'values' => $values);
         }
+
+public function check_login()
+    {
+            
+            if(!isset($_SESSION['user_logged_in']) OR $_SESSION['user_logged_in'] != 'Yes'){
+                redirect(base_url().'dashboard/login/');
+            }
+    }
 
 }
