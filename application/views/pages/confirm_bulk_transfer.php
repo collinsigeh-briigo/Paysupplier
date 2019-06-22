@@ -21,6 +21,7 @@
                     <li>Kindly confirm your action.</li>
                 </ul>
                 <hr>
+                <?php echo form_open('payments/send_bulk_transfer/'); ?>
                 <div class="fund-transfers">
                 <table class="table table-striped">
                 <thead>
@@ -30,20 +31,22 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                    <td>1</td>
-                    <td>NGN 12,000.00 to OGORO FLOWERS</td>
-                    </tr>
-                    <tr>
-                    <td>2</td>
-                    <td>NGN 12,000.00 to OGORO FLOWERS</td>
-                    </tr>
+                    <?php
+                        $total = 0;
+                        $i = 1;
+                        $no_transfers = count($transfers);
+                        foreach($transfers as $transfer){
+                            $naira_amount = $transfer['amount'] / 100;
+                            echo '<tr><td>'.$i.'</td><td><b>NGN'.$naira_amount.'</b> to <b>'.$transfer['supplier_name'].'</b></td></tr>';
+                            echo '<input type="hidden" class="form-control" name="'.$transfer['recipient_code'].'" value="'.$transfer['amount'].'" placeholder="Enter amount in kobo">';
+                            $i++;
+                        }
+                    ?>
                 </tbody>
                 </table>
                 </div>
                 <hr>
                 <div class="confirmation">
-                    <?php echo form_open('payments/send_bulk_transfer/'); ?>
                         <p><strong>Do you wish to continue?</strong></p>
                         <div class="form-group">
                             <span style="background-color: #f7f7f7; padding: 7px; border-radius: 3px;"><input id="confirm-box" type="checkbox" name="confirmaton" value="Confirm"> <label for="confirm-box"> Yes, execute payment</label><span>
@@ -60,8 +63,8 @@
                                 </div>
                             </div>
                         </div>
-                    <?php form_close(); ?>
                 </div>
+                <?php form_close(); ?>
             </div>
         </div>
 
