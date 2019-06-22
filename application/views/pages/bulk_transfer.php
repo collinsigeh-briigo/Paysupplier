@@ -22,7 +22,7 @@
                 </ul>
             </div><br>
 
-            <?php echo form_open('#'); ?>
+            <?php echo form_open('payments/confirm_bulk_transfer/'); ?>
             <table class="table table-striped">
             <thead>
                 <tr>
@@ -31,14 +31,11 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                <td>Ogoro Flowers</td>
-                <td><input class="form-control" type="text" name="<?php echo 'recipient_code'; ?>" placeholder="Enter amount in kobo"></td>
-                </tr>
-                <tr>
-                <td>Ogoro Flowers</td>
-                <td><input class="form-control" type="text" name="<?php echo('recipient_code'.'_amount'); ?>" placeholder="Enter amount in kobo"></td>
-                </tr>
+                <?php
+                    foreach($suppliers as $supplier){
+                        echo '<tr><td>'.$supplier['name'].'</td><td><input type="text" class="form-control" name="'.$supplier['recipient_code'].'" placeholder="Enter amount in kobo"></td></tr>';
+                    }
+                ?>
             </tbody>
             </table>
             <div class="form-group text-center">
