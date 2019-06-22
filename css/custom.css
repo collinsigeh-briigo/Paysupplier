@@ -1,0 +1,39 @@
+.main-action, .balance-summary, .page-content{
+    margin: 10px;
+}
+
+.balance-summary{
+    padding: 20px;
+}
+
+.page-content{
+    padding: 10px;
+}
+
+.form-body{
+    background-color: #b3b3b3;
+    padding: 10px;
+    border: 1px solid #ededed;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.instruction{
+    background-color: #f5f5f5;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.confirmation{
+    background-color: #b3b3b3;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.fund-transfers{
+    background-color: #ffffff;
+    padding: 10px;
+    border-radius: 5px;
+}
