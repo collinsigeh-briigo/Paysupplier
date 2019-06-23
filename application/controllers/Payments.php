@@ -63,7 +63,7 @@ class Payments extends CI_Controller {
         $this->load->library('form_validation');
         
         $this->form_validation->set_rules('recipient', 'Select supplier', 'required');
-        $this->form_validation->set_rules('amount', 'Amount', 'required|greater_than[100000]');
+        $this->form_validation->set_rules('amount', 'Amount', 'required|greater_than_equal_to[1000]');
 
         if ($this->form_validation->run() == FALSE)
         {
@@ -71,11 +71,12 @@ class Payments extends CI_Controller {
                 redirect(base_url().'payments/make_payment/');
         }
 
-        $amount = $_POST['amount'];
+        $display_amount = $_POST['amount'];
+        $amount = $display_amount * 100;//amount to kobo
         
         $balance = $this->account_balance();
-        if($amount >= ($balance - 50000)){
-            $_SESSION['errors'] = '<p>Your request is denied because your transfer amount is too large for your account balance.</p><p>For your transfer to be successful, you must have at least NGN 500.00 more than the amount you wish to transfer.</p>';
+        if(($amount + 50000) > $balance){
+            $_SESSION['errors'] = '<p>Insufficient balance.</p><p>For your transfer to be successful, you must have at least NGN 500.00 more than the amount you wish to transfer.</p>';
             redirect(base_url().'payments/make_payment/');
         }
 
@@ -101,6 +102,7 @@ class Payments extends CI_Controller {
             'supplier_name' => $supplier_name,
             'recipient' => $recipient,
             'amount' => $amount,
+            'display_amount' => $display_amount,
             'reason' => $reason
         );
 
@@ -135,8 +137,8 @@ class Payments extends CI_Controller {
         $amount = $_POST['amount'];
         
         $balance = $this->account_balance();
-        if($amount >= ($balance - 50000)){
-            $_SESSION['errors'] = '<p>Your request is denied because your transfer amount is too large for your account balance.</p><p>For your transfer to be successful, you must have at least NGN 500.00 more than the amount you wish to transfer.</p>';
+        if(($amount + 50000) > $balance){
+            $_SESSION['errors'] = '<p>Insufficient balance.</p><p>For your transfer to be successful, you must have at least NGN 500.00 more than the amount you wish to transfer.</p>';
             redirect(base_url().'payments/make_payment/');
         }
 
@@ -238,10 +240,15 @@ class Payments extends CI_Controller {
         foreach($suppliers as $supplier){
             $amount = 0;
             $ref = $supplier['recipient_code'];
-            if(isset($_POST[$ref]) && ($_POST[$ref] > 100000)){
-                $amount = $_POST[$ref];
+
+            if(isset($_POST[$ref]) && ($_POST[$ref] >= 1000)){
+
+                $naira_amount = $_POST[$ref];
+                $amount = $naira_amount * 100;
+
                 $transfers[$ref] = array(
                     'amount' => $amount,
+                    'naira_amount' => $naira_amount,
                     'recipient_code' => $ref,
                     'supplier_name' => $supplier['name']
                 );
@@ -262,7 +269,7 @@ class Payments extends CI_Controller {
         $account_balance = $this->account_balance();
 
         if($transfer_sum > ($account_balance + 50000)){
-            $_SESSION['errors'] = '<p>Your request is denied because your transfer sum plus charges is too large for your account balance.</p><p>For your transfer to be successful, you must have at least NGN 500.00 more than the amount you wish to transfer plus charges.</p>';
+            $_SESSION['errors'] = '<p>Insufficient balance.</p><p>For your transfer to be successful, you must have at least NGN 500.00 more than the amount you wish to transfer plus charges.</p>';
             redirect(base_url().'payments/bulk_transfer/');
         }
         

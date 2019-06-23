@@ -16,7 +16,7 @@
         <div>
             <div class="instruction">
                 <h5>Caution:</h5>
-                <p>You are about to transfer <b><?php echo("NGN ".$amount);?></b> to <b><?php echo $supplier_name; ?></b>.</p>
+                <p>You are about to transfer <b><?php echo("NGN ".$display_amount);?></b> to <b><?php echo $supplier_name; ?></b>.</p>
                 <p>Being payment for <b><?php echo $reason; ?></b>.</p>
                 <hr>
                 <div class="confirmation">

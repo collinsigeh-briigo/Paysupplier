@@ -17,7 +17,7 @@
             <div class="instruction">
                 <h5>Hint:</h5>
                 <ul>
-                    <li>Enter the amount to transfer to each supplier in Kobo.</li>
+                    <li>Enter the amount to transfer to each supplier in Naira.</li>
                     <li>Then click on the "Continue" button.</li>
                 </ul>
             </div><br>
@@ -33,7 +33,7 @@
             <tbody>
                 <?php
                     foreach($suppliers as $supplier){
-                        echo '<tr><td>'.$supplier['name'].'</td><td><input type="text" class="form-control" name="'.$supplier['recipient_code'].'" placeholder="Enter amount in kobo"></td></tr>';
+                        echo '<tr><td>'.$supplier['name'].'</td><td><input type="text" class="form-control" name="'.$supplier['recipient_code'].'" placeholder="Enter amount in Naira"></td></tr>';
                     }
                 ?>
             </tbody>

@@ -17,7 +17,7 @@
             <div class="instruction">
                 <h5>Caution:</h5>
                 <ul>
-                    <li>You are about make the following fund transfers.</li>
+                    <li>You are about to make the following fund transfers.</li>
                     <li>Kindly confirm your action.</li>
                 </ul>
                 <hr>
@@ -36,8 +36,7 @@
                         $i = 1;
                         $no_transfers = count($transfers);
                         foreach($transfers as $transfer){
-                            $naira_amount = $transfer['amount'] / 100;
-                            echo '<tr><td>'.$i.'</td><td><b>NGN'.$naira_amount.'</b> to <b>'.$transfer['supplier_name'].'</b></td></tr>';
+                            echo '<tr><td>'.$i.'</td><td><b>NGN '.$transfer['naira_amount'].'</b> to <b>'.$transfer['supplier_name'].'</b></td></tr>';
                             echo '<input type="hidden" class="form-control" name="'.$transfer['recipient_code'].'" value="'.$transfer['amount'].'" placeholder="Enter amount in kobo">';
                             $i++;
                         }

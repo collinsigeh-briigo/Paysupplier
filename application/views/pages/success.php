@@ -16,7 +16,7 @@
         <div>
             <div class="alert alert-success">
                 <h3>Report:</h3>
-                <h5>Hurrey! Action was successful.</h5>
+                <h5>Hurray! Action was successful.</h5>
             </div><br>
 
             <div class=" text-center">

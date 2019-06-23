@@ -39,9 +39,8 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="title">Amount</label>
-                            <input class="form-control" type="text" name="amount" placeholder="minimum of 100001" required />
-                            <small><strong>NOTE:</strong> Enter amount in kobo. Eg. 750000 to pay NGN 7,500.</small>
+                            <label for="title">Amount (NGN)</label>
+                            <input class="form-control" type="text" name="amount" placeholder="E.g. 7500" required />
                         </div>
 
                         <div class="form-group">
