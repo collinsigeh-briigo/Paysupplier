@@ -27,7 +27,7 @@ class Suppliers extends CI_Controller {
         $this->custom_library->check_login();
 
         $data = array(
-            'suppliers' => $this->get_suppliers()
+            'suppliers' => $this->custom_library->get_suppliers()
         );
 
         $this->load->view('templates/header');
@@ -42,7 +42,7 @@ class Suppliers extends CI_Controller {
         $this->custom_library->check_login();
 
         $data = array(
-            'banks' => $this->get_banks()
+            'banks' => $this->custom_library->get_banks()
         );
 
         $this->load->view('templates/header');
@@ -109,64 +109,5 @@ class Suppliers extends CI_Controller {
         }
         
     }
-
-    /**
-    * Get and return bank details
-    */
-    public function get_banks()
-    {
-        $this->custom_library->check_login();
-
-        $ch = curl_init();
-
-        curl_setopt($ch, CURLOPT_URL, 'https://api.paystack.co/bank');
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, Array("Authorization: Bearer sk_test_964385f725f9e13b9a6579dd8b4dddf460aaf036")); 
- 
-        $output = curl_exec($ch);
-
-        curl_close($ch);
-
-        if($output === FALSE){
-
-                $_SESSION['errors'] = 'An unexpected error occured.';
-                redirect(base_url().'dashboard/');
-        }
-
-        $arr = json_decode($output, TRUE);
-
-        return $arr['data'];
-    }
-
-    /**
-    * Get and return registered recipients from paystack
-    */
-    public function get_suppliers()
-    {
-        $this->custom_library->check_login();
-
-        $ch = curl_init();
-
-        curl_setopt($ch, CURLOPT_URL, 'https://api.paystack.co/transferrecipient');
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, Array("Authorization: Bearer sk_test_964385f725f9e13b9a6579dd8b4dddf460aaf036")); 
- 
-        $output = curl_exec($ch);
-
-        curl_close($ch);
-
-        if($output === FALSE){
-
-                $_SESSION['errors'] = 'An unexpected error occured.';
-                redirect(base_url().'dashboard/');
-        }
-
-        $arr = json_decode($output, TRUE);
-
-        return $arr['data'];
-    }
-
 
 }

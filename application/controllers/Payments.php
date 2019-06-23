@@ -27,7 +27,7 @@ class Payments extends CI_Controller {
         $this->custom_library->check_login();
 
         $data = array(
-            'payouts' => $this->get_payouts()
+            'payouts' => $this->custom_library->get_payouts()
         );
 
         $this->load->view('templates/header');
@@ -42,7 +42,7 @@ class Payments extends CI_Controller {
         $this->custom_library->check_login();
 
         $data = array(
-            'suppliers' => $this->get_suppliers()
+            'suppliers' => $this->custom_library->get_suppliers()
         );
 
         $this->load->view('templates/header');
@@ -74,7 +74,7 @@ class Payments extends CI_Controller {
         $display_amount = $_POST['amount'];
         $amount = $display_amount * 100;//amount to kobo
         
-        $balance = $this->account_balance();
+        $balance = $this->custom_library->account_balance();
         if(($amount + 50000) > $balance){
             $_SESSION['errors'] = '<p>Insufficient balance.</p><p>For your transfer to be successful, you must have at least NGN 500.00 more than the amount you wish to transfer.</p>';
             redirect(base_url().'payments/make_payment/');
@@ -83,7 +83,7 @@ class Payments extends CI_Controller {
         $recipient = $_POST['recipient'];
         $supplier_name = '';
 
-        $suppliers = $this->get_suppliers();
+        $suppliers = $this->custom_library->get_suppliers();
         foreach($suppliers as $supplier){
             
             if($supplier['recipient_code'] == $recipient){
@@ -136,7 +136,7 @@ class Payments extends CI_Controller {
 
         $amount = $_POST['amount'];
         
-        $balance = $this->account_balance();
+        $balance = $this->custom_library->account_balance();
         if(($amount + 50000) > $balance){
             $_SESSION['errors'] = '<p>Insufficient balance.</p><p>For your transfer to be successful, you must have at least NGN 500.00 more than the amount you wish to transfer.</p>';
             redirect(base_url().'payments/make_payment/');
@@ -176,35 +176,6 @@ class Payments extends CI_Controller {
             redirect(base_url().'dashboard/failure/');
         }
     }
-
-    /**
-    * Get and return payouts from paystack api
-    */
-    public function get_payouts()
-    {
-        $this->custom_library->check_login();
-
-        $ch = curl_init();
-
-        curl_setopt($ch, CURLOPT_URL, 'https://api.paystack.co/transfer');
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, Array("Authorization: Bearer sk_test_964385f725f9e13b9a6579dd8b4dddf460aaf036")); 
- 
-        $output = curl_exec($ch);
-
-        curl_close($ch);
-
-        if($output === FALSE){
-
-                $_SESSION['errors'] = 'An unexpected error occured.';
-                redirect(base_url().'dashboard/');
-        }
-
-        $arr = json_decode($output, TRUE);
-
-        return $arr['data'];
-    }
     
     /**
     * Display bulk_transfer page
@@ -214,7 +185,7 @@ class Payments extends CI_Controller {
         $this->custom_library->check_login();
 
         $data = array(
-            'suppliers' => $this->get_suppliers()
+            'suppliers' => $this->custom_library->get_suppliers()
         );
 
         $this->load->view('templates/header');
@@ -236,7 +207,7 @@ class Payments extends CI_Controller {
         $total_amount = 0;
         $transfer_sum = 0;
 
-        $suppliers = $this->get_suppliers();
+        $suppliers = $this->custom_library->get_suppliers();
         foreach($suppliers as $supplier){
             $amount = 0;
             $ref = $supplier['recipient_code'];
@@ -266,7 +237,7 @@ class Payments extends CI_Controller {
         $transfer_cost = $total_transfers * 5000;
         $transfer_sum = $total_amount + $transfer_cost;
 
-        $account_balance = $this->account_balance();
+        $account_balance = $this->custom_library->account_balance();
 
         if($transfer_sum > ($account_balance + 50000)){
             $_SESSION['errors'] = '<p>Insufficient balance.</p><p>For your transfer to be successful, you must have at least NGN 500.00 more than the amount you wish to transfer plus charges.</p>';
@@ -306,7 +277,7 @@ class Payments extends CI_Controller {
 
         $transfers = [];
 
-        $suppliers = $this->get_suppliers();
+        $suppliers = $this->custom_library->get_suppliers();
         foreach($suppliers as $supplier){
             $amount = 0;
             $ref = $supplier['recipient_code'];
@@ -353,131 +324,5 @@ class Payments extends CI_Controller {
         }
     }
 
-    /**
-         * Get and return bank details
-         */
-        public function get_banks()
-        {
-                $this->custom_library->check_login();
-
-                $ch = curl_init();
-
-                curl_setopt($ch, CURLOPT_URL, 'https://api.paystack.co/bank');
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($ch, CURLOPT_HEADER, 0);
-                curl_setopt($ch, CURLOPT_HTTPHEADER, Array("Authorization: Bearer sk_test_964385f725f9e13b9a6579dd8b4dddf460aaf036")); 
- 
-                $output = curl_exec($ch);
-
-                curl_close($ch);
-
-                if($output === FALSE){
-
-                        $_SESSION['errors'] = 'An unexpected error occured.';
-                        redirect(base_url().'dashboard/');
-                }
-
-                $arr = json_decode($output, TRUE);
-
-                return $arr['data'];
-        }
-
-        /**
-        * Get and return registered recipients from paystack
-        */
-        public function get_suppliers()
-        {
-            $this->custom_library->check_login();
-
-            $ch = curl_init();
-
-            curl_setopt($ch, CURLOPT_URL, 'https://api.paystack.co/transferrecipient');
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch, CURLOPT_HEADER, 0);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, Array("Authorization: Bearer sk_test_964385f725f9e13b9a6579dd8b4dddf460aaf036")); 
-    
-            $output = curl_exec($ch);
-
-            curl_close($ch);
-
-            if($output === FALSE){
-
-                    $_SESSION['errors'] = 'An unexpected error occured.';
-                    redirect(base_url().'dashboard/');
-            }
-
-            $arr = json_decode($output, TRUE);
-
-            return $arr['data'];
-        }
-
-        /**
-         * Checks for and returns account balance in kobo
-         */
-        public function account_balance()
-        {
-                $this->custom_library->check_login();
-
-                $balance = 0;
-
-                $ch = curl_init();
-
-                curl_setopt($ch, CURLOPT_URL, 'https://api.paystack.co/balance');
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($ch, CURLOPT_HEADER, 0);
-                curl_setopt($ch, CURLOPT_HTTPHEADER, Array("Authorization: Bearer sk_test_964385f725f9e13b9a6579dd8b4dddf460aaf036")); 
- 
-                $output = curl_exec($ch);
-
-                curl_close($ch);
-
-                if($output === FALSE){
-
-                        $_SESSION['errors'] = 'An unexpected error occured.';
-                        redirect(base_url().'dashboard/');
-                }
-
-                $arr = json_decode($output, TRUE);
-
-                $result = $this->extract_array_from_json($arr);
-
-                $result_string = implode("<br>", $result["values"]);
-                $result_array = explode("<br>", $result_string);
-                $balance = $result_array[3];
-
-
-                return $balance;
-        }
-
-        /**
-         * Recursive function to extract nested values
-         */
-        public function extract_array_from_json($arr) {
-                global $count;
-                global $values;
-                
-                // Check input is an array
-                if(!is_array($arr)){
-                die("ERROR: Input is not an array");
-                }
-                
-                /*
-                Loop through array, if value is itself an array recursively call the
-                function else add the value found to the output items array,
-                and increment counter by 1 for each value found
-                */
-                foreach($arr as $key=>$value){
-                if(is_array($value)){
-                        $this->extract_array_from_json($value);
-                } else{
-                        $values[] = $value;
-                        $count++;
-                }
-                }
-                
-                // Return total count and values found in array
-                return array('total' => $count, 'values' => $values);
-        }
-
-    
+  
 }

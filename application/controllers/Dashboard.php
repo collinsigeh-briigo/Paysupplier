@@ -26,7 +26,7 @@ class Dashboard extends CI_Controller {
         {
                 $this->custom_library->check_login();
 
-                $balance_in_kobo = $this->account_balance();
+                $balance_in_kobo = $this->custom_library->account_balance();
 
                 $naira_balance = ($balance_in_kobo / 100);
 
@@ -107,73 +107,6 @@ class Dashboard extends CI_Controller {
 
                 $this->load->view('templates/header');
                 $this->load->view('pages/failure');
-        }
-
-        /**
-         * Checks for and returns account balance in kobo
-         */
-        public function account_balance()
-        {
-                $this->custom_library->check_login();
-
-                $balance = 0;
-
-                $ch = curl_init();
-
-                curl_setopt($ch, CURLOPT_URL, 'https://api.paystack.co/balance');
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($ch, CURLOPT_HEADER, 0);
-                curl_setopt($ch, CURLOPT_HTTPHEADER, Array("Authorization: Bearer sk_test_964385f725f9e13b9a6579dd8b4dddf460aaf036")); 
- 
-                $output = curl_exec($ch);
-
-                curl_close($ch);
-
-                if($output === FALSE){
-                        $_SESSION['errors'] = 'An unexpected error occured.';
-                        redirect(base_url().'dashboard/');
-                }
-
-                $arr = json_decode($output, TRUE);
-
-                $result = $this->extract_array_from_json($arr);
-
-                $result_string = implode("<br>", $result["values"]);
-                $result_array = explode("<br>", $result_string);
-                $balance = $result_array[3];
-
-
-                return $balance;
-        }
-
-        /**
-         * Recursive function to extract nested values
-         */
-        public function extract_array_from_json($arr) {
-                global $count;
-                global $values;
-                
-                // Check input is an array
-                if(!is_array($arr)){
-                die("ERROR: Input is not an array");
-                }
-                
-                /*
-                Loop through array, if value is itself an array recursively call the
-                function else add the value found to the output items array,
-                and increment counter by 1 for each value found
-                */
-                foreach($arr as $key=>$value){
-                if(is_array($value)){
-                        $this->extract_array_from_json($value);
-                } else{
-                        $values[] = $value;
-                        $count++;
-                }
-                }
-                
-                // Return total count and values found in array
-                return array('total' => $count, 'values' => $values);
         }
 
 }
