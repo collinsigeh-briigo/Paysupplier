@@ -27,7 +27,7 @@
             <thead>
                 <tr>
                 <th scope="col">Supplier</th>
-                <th scope="col">Amount</th>
+                <th scope="col">Amount to transfer</th>
                 </tr>
             </thead>
             <tbody>

@@ -25,7 +25,7 @@
             <?php
                 foreach($payouts as $payout){
                     $display_amount = $payout['amount'] / 100;
-                    echo '<tr><td>NGN '.$display_amount.' to '.$payout['recipient']['name'].'</td><td>'.$payout['recipient']['details']['bank_name'].' ('.$payout['recipient']['details']['account_number'].')</td><td><small>'.$payout['createdAt'].'</small></td></tr>';
+                    echo '<tr><td>NGN '.$display_amount.' to '.$payout['recipient']['name'].'</td><td>'.$payout['recipient']['details']['bank_name'].' ('.$payout['recipient']['details']['account_number'].')</td><td><small>'.substr($payout['createdAt'], 0, 10).'</small></td></tr>';
                 }
             ?>
         </tbody>

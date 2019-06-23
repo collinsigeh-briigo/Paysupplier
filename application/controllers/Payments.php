@@ -63,7 +63,7 @@ class Payments extends CI_Controller {
         $this->load->library('form_validation');
         
         $this->form_validation->set_rules('recipient', 'Select supplier', 'required');
-        $this->form_validation->set_rules('amount', 'Amount', 'required|greater_than_equal_to[1000]');
+        $this->form_validation->set_rules('amount', 'Amount', 'required|greater_than_equal_to[500]');
 
         if ($this->form_validation->run() == FALSE)
         {
@@ -125,7 +125,7 @@ class Payments extends CI_Controller {
 
         $this->form_validation->set_rules('confirmaton', 'Confirmation', 'required');
         $this->form_validation->set_rules('reason', 'Reason for payment', 'required');
-        $this->form_validation->set_rules('amount', 'amount', 'required|greater_than[100000]');
+        $this->form_validation->set_rules('amount', 'amount', 'required|greater_than_equal_to[50000]');
         $this->form_validation->set_rules('recipient', 'Recipient code', 'required');
 
         if ($this->form_validation->run() == FALSE)
@@ -241,7 +241,7 @@ class Payments extends CI_Controller {
             $amount = 0;
             $ref = $supplier['recipient_code'];
 
-            if(isset($_POST[$ref]) && ($_POST[$ref] >= 1000)){
+            if(isset($_POST[$ref]) && ($_POST[$ref] >= 500)){
 
                 $naira_amount = $_POST[$ref];
                 $amount = $naira_amount * 100;
@@ -288,10 +288,7 @@ class Payments extends CI_Controller {
     */
     public function send_bulk_transfer()
     {
-        //checker
-        $_SESSION['errors'] = '<p>Bulk transfers CANNOT be processed for now!</p><p><b>Troubleshooting in progress.</b></p><p>Please use the "<b><a href="'.base_url().'payments/make_payment">Pay a Supplier</a></b>"</p>';
-        redirect(base_url().'dashboard/failure/');
-        //checker
+        $this->custom_library->check_login();
 
         if(!$_POST){
             redirect(base_url().'dashboard/');
@@ -313,16 +310,14 @@ class Payments extends CI_Controller {
         foreach($suppliers as $supplier){
             $amount = 0;
             $ref = $supplier['recipient_code'];
-            if(isset($_POST[$ref]) && ($_POST[$ref] > 100000)){
+            if(isset($_POST[$ref]) && ($_POST[$ref] > 50000)){
                 $amount = $_POST[$ref];
-                $transfers->offset(array(
+                array_push($transfers, array(
                     'amount' => $amount,
                     'recipient' => $ref
                 ));
             }
         }
-
-        var_dump($transfers);
 
         $post_data = array(
             'currency' => 'NGN',
@@ -330,15 +325,12 @@ class Payments extends CI_Controller {
             'transfers' => $transfers
         );
 
-        echo($post_data);
-        exit();
-
         $ch = curl_init();
 
         curl_setopt($ch, CURLOPT_URL, 'https://api.paystack.co/transfer');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post_data));
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_HTTPHEADER, Array("Authorization: Bearer sk_test_964385f725f9e13b9a6579dd8b4dddf460aaf036"));
  
