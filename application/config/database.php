@@ -75,7 +75,7 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'localhost',
+	'hostname' => 'https://paysupplier.herokuapp.com',
 	'username' => '',
 	'password' => '',
 	'database' => '',
