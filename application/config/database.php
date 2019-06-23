@@ -75,9 +75,9 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'https://paysupplier.herokuapp.com',
-	'username' => '',
-	'password' => '',
+	'hostname' => 'us-cdbr-iron-east-02.cleardb.net',
+	'username' => 'b4fb654b711acf',
+	'password' => 'b52744e1',
 	'database' => '',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
