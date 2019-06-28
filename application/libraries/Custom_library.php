@@ -5,8 +5,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * Custom_liberay is designed to do the following:
  * 
  * 01 - check user login session
- * 02 - check and returns account balance
- * 03 - gets and returns suppliers
+ * 02 - check and returns account balance, suppliers, payments made, and banks details
  * 
  * @author      Collins Igeh
  * 
